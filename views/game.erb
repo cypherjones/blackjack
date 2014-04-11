@@ -12,8 +12,12 @@
 
 <div class="well">
   <h4> Dealer's cards:</h4>
-  <% session[:dealer_cards].each do |card| %>
-    <%= card_image(card) %>
+  <% session[:dealer_cards].each_with_index do |card, i| %>
+    <% if session[:turn] != "dealer" && i == 0 %>
+      <img src="/images/cards/cover.jpg">
+    <% else %>
+      <%= card_image(card) %>
+    <% end %>
   <% end %>
 </div>
 

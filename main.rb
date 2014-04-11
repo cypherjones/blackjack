@@ -4,6 +4,9 @@ require 'pry'
 
 set :sessions, true
 
+BLACKJACK_AMOUNT = 21
+DEALER_MIN_HIT = 17
+
 helpers do 
      def calculate_total(cards) # cards is [["H", "3"],... ]
         arr = cards.map{|element| element[1]}
@@ -18,7 +21,7 @@ helpers do
 
            #always correct for aces
            arr.select{|element| element == "A"}.count.times do
-               break if total <= 21
+               break if total <= BLACKJACK_AMOUNT
              total -= 10
            end
 
@@ -98,6 +101,8 @@ post '/set_name' do
 end
 
 get '/game' do
+  session[:turn] = session[:player_name]
+
   # set up initial game values
   # create a deck and put it in a session
   suits          = ['H','D','C','S']
@@ -120,9 +125,9 @@ post '/game/player/hit' do
   session[:player_cards] << session[:deck].pop
 
     player_total = calculate_total(session[:player_cards])
-    if player_total == 21
+    if player_total == BLACKJACK_AMOUNT
       winner!("#{session[:player_name]} hit blackjack.")
-    elsif player_total > 21
+    elsif player_total > BLACKJACK_AMOUNT
       loser!("#{session[:player_name]} busted!")
     end  
   erb :game
@@ -136,16 +141,18 @@ end
 
  
  get '/game/dealer' do
-    @show_hit_or_stay_button = false
-    dealer_total = calculate_total(session[:dealer_cards])
+  session[:turn] = "dealer"
+  @show_hit_or_stay_button = false
+  
+  dealer_total = calculate_total(session[:dealer_cards])
 
     #decision tree
-    if dealer_total == 21
+    if dealer_total == BLACKJACK_AMOUNT
       loser!("Sorry, Dealer hit Blackjack. Want to paly again?")
     elsif 
-      dealer_total > 21
+      dealer_total > BLACKJACK_AMOUNT
       winner!("Congrats! The Dealer busted. You win.")
-    elsif dealer_total >= 17
+    elsif dealer_total >= DEALER_MIN_HIT
       redirect '/game/compare'
     else
       @show_dealer_hit_btn = true
