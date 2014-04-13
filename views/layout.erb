@@ -4,6 +4,8 @@
     <title>Black Jack Baby</title>
     <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="/application.css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="/application.js"></script>
   </head>
   <body style="padding-top: 50px;">
 
@@ -12,7 +14,7 @@
         <div class="container">
             <ul class="nav">
               <li><a href="/set_name">New Game</a></li>
-              <li><a href="/game">Another Round</a></li>
+              <li><a href="/bet">Another Round</a></li>
             </ul>
         </div>
       </div>
@@ -25,6 +27,7 @@
     <%if @success %>
       <div class="alert alert-success"><%=@success%></div>
     <% end %>
+    
       <%= yield %>
   </div>
   </body>
